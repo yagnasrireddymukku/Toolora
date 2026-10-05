@@ -7,6 +7,12 @@ import {
   slabTax,
   type CtcInput,
 } from "./salary";
+import {
+  CESS_RATE,
+  NEW_REGIME_SLABS,
+  REBATE_INCOME_LIMIT,
+  STANDARD_DEDUCTION,
+} from "./tax-config";
 
 const base: CtcInput = {
   annualCtc: 1_200_000,
@@ -41,6 +47,34 @@ describe("tax slabs", () => {
     expect(newRegimeTax(1_210_000)).toBeCloseTo(10_000 * 1.04, 6); // marginal relief caps tax at the excess
     expect(newRegimeTax(1_500_000)).toBeCloseTo(105_000 * 1.04, 6);
     expect(newRegimeTax(0)).toBe(0);
+  });
+});
+
+describe("tax configuration matches the officially published figures (reviewed October 2026)", () => {
+  it("has exactly the seven published new-regime slabs", () => {
+    expect(NEW_REGIME_SLABS.map((s) => [s.upTo, s.rate])).toEqual([
+      [400_000, 0],
+      [800_000, 5],
+      [1_200_000, 10],
+      [1_600_000, 15],
+      [2_000_000, 20],
+      [2_400_000, 25],
+      [Infinity, 30],
+    ]);
+  });
+  it("uses the published standard deduction, rebate limit and cess", () => {
+    expect(STANDARD_DEDUCTION).toBe(75_000);
+    expect(REBATE_INCOME_LIMIT).toBe(1_200_000);
+    expect(CESS_RATE).toBe(0.04);
+  });
+  it("reproduces the official published figures for tax at slab boundaries (before cess)", () => {
+    // Income Tax Department table: 8L = 20,000; 12L = 60,000; 16L = 1,20,000 + ...; 20L = 2,00,000; 24L = 3,00,000
+    expect(slabTax(800_000)).toBe(20_000);
+    expect(slabTax(1_200_000)).toBe(60_000);
+    expect(slabTax(1_600_000)).toBe(120_000);
+    expect(slabTax(2_000_000)).toBe(200_000);
+    expect(slabTax(2_400_000)).toBe(300_000);
+    expect(slabTax(2_500_000)).toBe(330_000);
   });
 });
 

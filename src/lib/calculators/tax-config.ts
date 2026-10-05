@@ -10,15 +10,23 @@ export const TAX_ASSUMPTION_LABEL =
   "New tax regime slabs for FY 2025-26 and FY 2026-27 (resident individual under 60)";
 
 /**
- * Review status. The slabs below were cross-checked in October 2026 against several
- * secondary sources (tax portals and news coverage of Union Budget 2026), which agree that
- * the new-regime slabs, the ₹75,000 standard deduction and the ₹12 lakh rebate limit are
- * unchanged for FY 2026-27. They were NOT checked against the official gazette or
- * incometax.gov.in. Re-check after every Budget.
+ * Review status (October 2026). Checked against official Government of India documents:
+ *  - Slab rates: Income Tax Department "Salaried Individuals for AY 2026-27" page (new regime
+ *    under section 115BAC), and the Finance Bill, 2026 explanatory memorandum
+ *    (indiabudget.gov.in/doc/memo.pdf), which lists the same seven default slabs for tax year
+ *    2026-27 under section 202 of the Income-tax Act, 2025 and states "no change proposed in
+ *    tax rates".
+ *  - Cess: the same memorandum, 4% on income-tax including surcharge.
+ *  - Rebate: Income Tax Department page for AY 2026-27 (₹60,000, taxable income up to ₹12,00,000).
+ *  - Standard deduction ₹75,000: PIB release on Union Budget 2025-26 and Income Tax Department
+ *    guidance. The Budget 2026-27 speech and Finance Bill memorandum propose no change to it.
+ * Not explicitly restated in an official FY 2026-27 document that was read: the rebate and
+ * standard deduction (no change was proposed). Surcharge above ₹50 lakh is not modelled.
+ * Re-check after every Budget.
  */
 export const TAX_LAST_REVIEWED = "October 2026";
 export const TAX_SOURCE_NOTE =
-  "Rates reviewed in October 2026 from published secondary sources, not the official gazette. Surcharge (incomes above ₹50 lakh) and old-regime deductions are not modelled.";
+  "Slabs, cess, rebate and standard deduction were checked in October 2026 against Income Tax Department and Union Budget documents (no change was proposed for FY 2026-27). Surcharge on incomes above ₹50 lakh and old-regime deductions are not modelled. Rules can change, so confirm with official sources.";
 
 export interface TaxSlab {
   /** Upper bound of the slab in rupees (Infinity for the last slab). */
