@@ -126,3 +126,40 @@ export function SelectField({
     </FieldShell>
   );
 }
+
+export function CheckboxField({
+  label,
+  hint,
+  id: idProp,
+  ...props
+}: { label: string; hint?: string } & Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "type"
+>) {
+  const auto = useId();
+  const id = idProp ?? auto;
+  return (
+    <div className="flex items-start gap-3">
+      <input
+        id={id}
+        type="checkbox"
+        aria-describedby={hint ? `${id}-hint` : undefined}
+        className="accent-brand-700 mt-1 size-5 shrink-0"
+        {...props}
+      />
+      <div>
+        <label
+          htmlFor={id}
+          className="text-ink block min-h-6 cursor-pointer text-sm font-medium"
+        >
+          {label}
+        </label>
+        {hint && (
+          <p id={`${id}-hint`} className="text-ink-muted text-sm">
+            {hint}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
