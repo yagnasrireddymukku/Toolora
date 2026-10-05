@@ -29,7 +29,7 @@ export default function ContactPage() {
       ) : (
         <div className="mt-6">
           <Alert tone="warning" title="Contact address not configured">
-            The site owner has not set a contact email yet (NEXT_PUBLIC_CONTACT_EMAIL).
+            A contact email is not available on this site yet. Please check back soon.
           </Alert>
         </div>
       )}

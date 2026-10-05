@@ -9,6 +9,9 @@ import { breadcrumbJsonLd, faqJsonLd, toolCrumbs, webApplicationJsonLd } from "@
 import { getRelatedTools } from "@/lib/tools/registry";
 import type { ToolDefinition } from "@/lib/tools/types";
 
+/** Categories whose results are estimates. Exact tools (JSON, QR) do not get the estimate notice. */
+const ESTIMATE_CATEGORIES = new Set<string>(["education", "career", "salary"]);
+
 /**
  * Reusable tool page: breadcrumbs, H1, description, interactive tool (children),
  * then how it works, formula, example, tips, limitations, FAQ and related tools.
@@ -105,13 +108,15 @@ export function ToolPageTemplate({
         </section>
       )}
 
-      <p className="text-ink-muted mt-10 text-sm">
-        Results are estimates for general guidance. See our{" "}
-        <Link href="/disclaimer/" className="underline">
-          disclaimer
-        </Link>
-        .
-      </p>
+      {ESTIMATE_CATEGORIES.has(tool.category) && (
+        <p className="text-ink-muted mt-10 text-sm">
+          Results are estimates for general guidance. See our{" "}
+          <Link href="/disclaimer/" className="underline">
+            disclaimer
+          </Link>
+          .
+        </p>
+      )}
     </div>
   );
 }

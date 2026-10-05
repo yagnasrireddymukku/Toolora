@@ -188,3 +188,53 @@ test.describe("reset and empty states on every tool", () => {
     await expect(page.getByRole("region", { name: "Your QR code" })).toBeHidden();
   });
 });
+
+test.describe("text accuracy", () => {
+  test.skip(({ isMobile }) => isMobile, "runs once on desktop");
+
+  test("homepage never repeats the same tool card in two sections", async ({ page }) => {
+    await page.goto("/");
+    const names = await page.locator("main h3").allTextContents();
+    expect(new Set(names).size).toBe(names.length);
+  });
+
+  test("the estimate notice appears only on tools whose results are estimates", async ({
+    page,
+  }) => {
+    for (const path of [
+      "/tools/salary/ctc-to-inhand-calculator/",
+      "/tools/education/cgpa-calculator/",
+      "/tools/career/ats-resume-checker/",
+    ]) {
+      await page.goto(path);
+      await expect(
+        page.getByText("Results are estimates for general guidance"),
+      ).toBeVisible();
+    }
+    for (const path of [
+      "/tools/developer/json-formatter/",
+      "/tools/utility/qr-code-generator/",
+    ]) {
+      await page.goto(path);
+      await expect(
+        page.getByText("Results are estimates for general guidance"),
+      ).toHaveCount(0);
+    }
+  });
+
+  test("no page shows developer-only text such as environment variable names", async ({
+    page,
+    request,
+  }) => {
+    const xml = await (await request.get("/sitemap.xml")).text();
+    const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
+      (m) => new URL(m[1]).pathname,
+    );
+    for (const path of paths) {
+      await page.goto(path);
+      expect(await page.locator("main").innerText(), path).not.toMatch(
+        /NEXT_PUBLIC_|localhost|TODO|lorem ipsum/i,
+      );
+    }
+  });
+});

@@ -46,10 +46,17 @@ const HOME_FAQS: Faq[] = [
   },
 ];
 
+/** Look at every tool when choosing "Recently added", then drop the ones already popular. */
+const TOOL_LIMIT = 100;
+
 export default function HomePage() {
   const categories = getActiveCategories();
   const popular = getPopularTools();
-  const recent = getRecentTools(4);
+  // Never repeat cards already shown under "Popular tools".
+  const popularSlugs = new Set(popular.map((t) => t.slug));
+  const recent = getRecentTools(TOOL_LIMIT)
+    .filter((t) => !popularSlugs.has(t.slug))
+    .slice(0, 4);
 
   return (
     <>
@@ -108,18 +115,20 @@ export default function HomePage() {
           </ul>
         </section>
 
-        <section aria-labelledby="recent-h">
-          <h2 id="recent-h" className="text-2xl font-bold">
-            Recently added
-          </h2>
-          <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {recent.map((t) => (
-              <li key={t.slug}>
-                <ToolCard tool={t} />
-              </li>
-            ))}
-          </ul>
-        </section>
+        {recent.length > 0 && (
+          <section aria-labelledby="recent-h">
+            <h2 id="recent-h" className="text-2xl font-bold">
+              Recently added
+            </h2>
+            <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {recent.map((t) => (
+                <li key={t.slug}>
+                  <ToolCard tool={t} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <section aria-labelledby="why-h">
           <h2 id="why-h" className="text-2xl font-bold">
