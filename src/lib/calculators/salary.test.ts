@@ -44,6 +44,19 @@ describe("tax slabs", () => {
   });
 });
 
+describe("regression: new-regime tax at known income levels (gross salary, after ₹75,000 standard deduction)", () => {
+  const taxOnGross = (gross: number) => newRegimeTax(gross - 75_000);
+  it.each([
+    [400_000, 0],
+    [1_275_000, 0], // ₹12.75 lakh gross is the commonly quoted zero-tax salary
+    [1_300_000, 26_000], // taxable 12.25L: slab tax 63,750 capped by marginal relief at 25,000, plus 4% cess
+    [1_800_000, 150_800], // taxable 17.25L: 145,000 + 4% cess
+    [2_400_000, 292_500], // taxable 23.25L: 281,250 + 4% cess
+  ])("gross %i gives tax %i", (gross, expected) => {
+    expect(taxOnGross(gross)).toBeCloseTo(expected, 4);
+  });
+});
+
 describe("calculateCtc", () => {
   it("produces a transparent breakdown for a ₹12 lakh CTC", () => {
     const r = ok(base);

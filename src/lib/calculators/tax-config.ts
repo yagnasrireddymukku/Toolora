@@ -7,7 +7,18 @@
  */
 
 export const TAX_ASSUMPTION_LABEL =
-  "New tax regime, FY 2025-26 slabs (resident individual under 60)";
+  "New tax regime slabs for FY 2025-26 and FY 2026-27 (resident individual under 60)";
+
+/**
+ * Review status. The slabs below were cross-checked in October 2026 against several
+ * secondary sources (tax portals and news coverage of Union Budget 2026), which agree that
+ * the new-regime slabs, the ₹75,000 standard deduction and the ₹12 lakh rebate limit are
+ * unchanged for FY 2026-27. They were NOT checked against the official gazette or
+ * incometax.gov.in. Re-check after every Budget.
+ */
+export const TAX_LAST_REVIEWED = "October 2026";
+export const TAX_SOURCE_NOTE =
+  "Rates reviewed in October 2026 from published secondary sources, not the official gazette. Surcharge (incomes above ₹50 lakh) and old-regime deductions are not modelled.";
 
 export interface TaxSlab {
   /** Upper bound of the slab in rupees (Infinity for the last slab). */

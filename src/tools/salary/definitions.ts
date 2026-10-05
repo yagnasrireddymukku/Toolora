@@ -43,7 +43,7 @@ export const SALARY_TOOLS: ToolDefinition[] = [
         "Gross salary = CTC − employer PF − gratuity − other employer benefits. Basic = CTC × basic %. HRA = basic × HRA %. Special allowance is the balancing figure, so earnings always add up to gross.",
         "Employee PF = 12% of basic (or of the ₹15,000/month wage ceiling if you choose that option). Employer PF uses the same wage.",
         "In-hand salary = gross − employee PF − professional tax − other deductions − income tax, shown per year and divided by 12 for the monthly figure.",
-        "Income tax (estimate mode) uses the new tax regime: taxable income is gross less the ₹75,000 standard deduction, taxed on the new-regime slabs, with the section 87A rebate (nil tax up to ₹12 lakh taxable income, with marginal relief just above it) and 4% cess. The slabs are shown on this page as assumptions and can change with each Budget.",
+        "Income tax (estimate mode) uses the new tax regime: taxable income is gross less the ₹75,000 standard deduction, taxed on the new-regime slabs, with the section 87A rebate (nil tax up to ₹12 lakh taxable income, with marginal relief just above it) and 4% cess. The slabs (unchanged between FY 2025-26 and FY 2026-27) are shown on this page as assumptions, were reviewed from published secondary sources in October 2026 rather than the official gazette, and can change with each Budget.",
       ],
     },
     example: {
@@ -65,7 +65,7 @@ export const SALARY_TOOLS: ToolDefinition[] = [
       "This is an estimate, not payroll software or tax advice. Employers structure pay differently.",
       "Tax is estimated for a resident individual under 60 on the new regime only. Old-regime deductions (80C, HRA exemption and so on) are not modelled.",
       "Reimbursements, LTA, NPS, bonuses, perquisites, surcharge on very high incomes and state-specific rules are not included.",
-      "Tax slabs and limits change over time. Verify against current official rules.",
+      "Tax slabs and limits change over time and were reviewed from secondary sources, not the official gazette. Surcharge on incomes above ₹50 lakh is not modelled. Verify against current official rules.",
     ],
     faqs: [
       {

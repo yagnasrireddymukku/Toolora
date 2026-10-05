@@ -24,6 +24,7 @@ import {
   PF_WAGE_CEILING_MONTHLY,
   STANDARD_DEDUCTION,
   TAX_ASSUMPTION_LABEL,
+  TAX_SOURCE_NOTE,
 } from "@/lib/calculators/tax-config";
 import { toCsv } from "@/lib/csv";
 import { formatCurrency, formatNumber, parseNumber } from "@/lib/format";
@@ -432,6 +433,7 @@ export function CtcCalculator() {
                 . Confirm your exact figures with your employer or a qualified tax
                 professional.
               </p>
+              {form.taxMode === "estimate" && <p className="mt-2">{TAX_SOURCE_NOTE}</p>}
             </Alert>
           </div>
         </ResultPanel>

@@ -282,7 +282,7 @@ test.describe("accessibility audit (axe, WCAG 2.1 A and AA)", () => {
 });
 
 test.describe("responsive audit", () => {
-  const WIDTHS = [320, 375, 390, 414, 768, 1024, 1280, 1440, 1920];
+  const WIDTHS = [320, 360, 375, 390, 414, 480, 768, 820, 1024, 1280, 1366, 1440, 1920];
   const MIN_TARGET = 43.5; // 44px with sub-pixel rounding
 
   async function overflow(page: Page): Promise<number> {
@@ -326,6 +326,7 @@ test.describe("responsive audit", () => {
     page,
     request,
   }) => {
+    test.setTimeout(600_000); // 13 widths x every page
     const paths = ["/", ...(await sitemapPaths(request)).filter((p) => p !== "/")];
     const problems: string[] = [];
     for (const width of WIDTHS) {

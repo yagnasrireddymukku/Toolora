@@ -50,13 +50,52 @@ Check headers with `curl -I https://www.yourdomain.com/` (look for `content-secu
 
 Ads are off. When your site is approved: set `NEXT_PUBLIC_ADSENSE_CLIENT`, add the AdSense script and slot IDs in `src/components/layout/AdSlot.tsx`, and add a consent solution first. Do not place ads above the tool.
 
+## Redirects and canonical URLs
+
+- Every page's canonical URL, the sitemap, Open Graph URLs, structured data and `robots.txt` are all built from `NEXT_PUBLIC_SITE_URL`, so they always agree. Use the exact address visitors reach (including `www` or not).
+- `.htaccess` redirects `http://` to `https://`. Choose one host form (www or non-www) and uncomment the matching block so the other form redirects to it, otherwise search engines may see duplicate sites.
+- URLs end in `/` (for example `/tools/education/cgpa-calculator/`). Apache redirects the no-slash form to the slash form automatically.
+
+## Contact email
+
+The Contact page reads `NEXT_PUBLIC_CONTACT_EMAIL` at build time. The form opens the visitor's own email app with a pre-filled message (`mailto:`); nothing is sent by the website, and the page says so. If the variable is empty, the page shows a "not configured" notice instead of a form. Use a real inbox you monitor.
+
+## Caching
+
+- Hashed build files in `_next/static/` are cached for one year (`immutable`). HTML pages are revalidated on each visit, so a new upload shows up immediately.
+- If you use a CDN (such as Cloudflare), purge its cache after each upload and do not enable a second HTTPS redirect. If a browser shows an old version, hard-refresh (Ctrl+F5).
+- `sitemap.xml` and `robots.txt` are cached for an hour.
+
+## Adding analytics or ads later (not enabled now)
+
+Neither is active in the current build and the Privacy Policy describes them conditionally.
+
+- **Analytics:** set `NEXT_PUBLIC_GA_ID` and rebuild. The loader is `src/components/layout/Analytics.tsx` (already wired into the layout, off when the variable is empty).
+- **Ads:** set `NEXT_PUBLIC_ADSENSE_CLIENT`, then add the AdSense script and approved slot IDs in `src/components/layout/AdSlot.tsx`. `ToolPageTemplate` already places one slot below the tool and above the explanatory content. Do not put ads between the inputs and the result.
+- **Before either:** add a cookie-consent mechanism if you have EU/UK (or similar) visitors, check the CSP in `public/.htaccess` allows the hosts you use (Google hosts are already listed), and update the Privacy Policy.
+
+## Post-deployment verification
+
+Hostinger deployment cannot be verified from the development machine, so check these on the live site:
+
+1. `http://yourdomain.com` redirects to `https://…` and lands on the homepage.
+2. Open a tool, for example `/tools/salary/ctc-to-inhand-calculator/`, and run a calculation.
+3. Open a made-up URL: the Toolora 404 page appears.
+4. `/sitemap.xml` and `/robots.txt` load and show your real domain, not `example.com`.
+5. View page source on the homepage: the canonical link and `og:url` use your domain.
+6. Upload a small PDF in the ATS checker (confirms `.mjs` files are served correctly).
+7. Run `curl -I https://yourdomain.com/` and look for the security headers. If missing, see Troubleshooting.
+8. Complete the post-launch part of [LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md).
+
 ## Troubleshooting
 
-| Symptom                            | Fix                                                                                                            |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Pages 404 except the homepage      | `out/` contents were uploaded in a nested folder. `index.html` must be directly in `public_html`.              |
-| Blank page / unstyled              | Upload was partial. Re-upload including the `_next` folder.                                                    |
-| PDF upload does nothing            | `.mjs` is served with the wrong type. Confirm `.htaccess` is present (it adds `AddType text/javascript .mjs`). |
-| Redirect loop                      | A Cloudflare/"Force HTTPS" setting conflicts with the `.htaccess` HTTPS rule. Remove one.                      |
-| Canonical points to `example.com`  | `NEXT_PUBLIC_SITE_URL` was not set at build time. Rebuild with `build:prod`.                                   |
-| Contact page says "not configured" | Set `NEXT_PUBLIC_CONTACT_EMAIL` and rebuild.                                                                   |
+| Symptom                               | Fix                                                                                                                         |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Pages 404 except the homepage         | `out/` contents were uploaded in a nested folder. `index.html` must be directly in `public_html`.                           |
+| Blank page / unstyled                 | Upload was partial. Re-upload including the `_next` folder.                                                                 |
+| PDF upload does nothing               | `.mjs` is served with the wrong type. Confirm `.htaccess` is present (it adds `AddType text/javascript .mjs`).              |
+| Redirect loop                         | A Cloudflare/"Force HTTPS" setting conflicts with the `.htaccess` HTTPS rule. Remove one.                                   |
+| Canonical points to `example.com`     | `NEXT_PUBLIC_SITE_URL` was not set at build time. Rebuild with `build:prod`.                                                |
+| Contact page says "not configured"    | Set `NEXT_PUBLIC_CONTACT_EMAIL` and rebuild.                                                                                |
+| Security headers missing in `curl -I` | The host may not allow `mod_headers`. The site still works. Ask Hostinger support, or set the headers in hPanel if offered. |
+| Old content after re-upload           | Purge any CDN cache and hard-refresh the browser.                                                                           |

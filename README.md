@@ -61,6 +61,7 @@ All values are optional except the site URL, and all are **public** (embedded in
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): structure, decisions, how to add a tool, SEO and testing approach
 - [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md): Hostinger deployment, domain, SSL, Search Console, analytics
+- [docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md): step-by-step go-live checklist
 - [docs/AUDITS.md](docs/AUDITS.md): what was audited, how, results and known limitations
 
 ## Not included yet
