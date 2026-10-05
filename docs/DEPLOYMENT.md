@@ -1,0 +1,62 @@
+# Deploying to Hostinger
+
+Toolora builds to plain static files. You build on your computer (or CI), then upload the contents of `out/`. Menu names in hPanel change occasionally, so treat the paths below as a guide and check Hostinger's current help pages if something differs.
+
+**Requirements on Hostinger:** any web hosting plan that serves static files over Apache or LiteSpeed (both read `.htaccess`). No Node.js, database or Docker needed.
+
+## 1. Configure and build
+
+```bash
+npm ci
+# Create .env.production.local (never commit it):
+#   NEXT_PUBLIC_SITE_URL=https://www.yourdomain.com
+#   NEXT_PUBLIC_CONTACT_EMAIL=you@yourdomain.com
+npm run build:prod
+```
+
+`build:prod` builds and then runs `scripts/verify-build.mjs`, which **fails** if the sitemap or canonical URLs still use the placeholder domain, `robots.txt`/404/`.htaccess` are missing, or an `.env` file would be uploaded. Environment values are baked in at build time: rebuild after changing them.
+
+## 2. Upload
+
+1. hPanel → **Websites** → your site → **File Manager** (or use FTP/SFTP).
+2. Open `public_html` and remove any default placeholder page.
+3. Upload the **contents** of `out/` (not the folder itself) into `public_html`, so `index.html` and `.htaccess` sit directly in it. Easiest: zip the contents of `out/`, upload the zip, then **Extract**.
+4. Make sure the hidden file `.htaccess` is present (File Manager → Settings → "Show hidden files").
+
+To update later, rebuild and re-upload (overwrite). Hashed files in `_next/static` are cached for a year, so old ones can be deleted after a few days.
+
+## 3. Domain and SSL
+
+1. hPanel → **Domains**: point your domain at the hosting (change nameservers to Hostinger's, or add an `A` record for `@` to your server IP and a `CNAME` for `www`). DNS can take from minutes to 24 h.
+2. hPanel → **Security → SSL**: install the free SSL certificate and enable **Force HTTPS**.
+3. Decide on `www` vs non-`www`. Uncomment the matching block in `.htaccess`, replace `example.com`, and make `NEXT_PUBLIC_SITE_URL` use the same host. Rebuild if you changed it.
+4. Verify: `http://yourdomain.com` redirects to `https://…`, `/tools/education/cgpa-calculator/` loads, a bad URL shows the Toolora 404 page, and `https://yourdomain.com/sitemap.xml` and `/robots.txt` load.
+
+Check headers with `curl -I https://www.yourdomain.com/` (look for `content-security-policy`, `strict-transport-security`). If your plan strips them, the site still works; they are defence in depth.
+
+## 4. Google Search Console
+
+1. Add a **Domain** property and verify with the DNS `TXT` record Google gives you (preferred, no rebuild). Alternatively use a **URL-prefix** property and the HTML-tag method: put the token (the `content` value only) in `NEXT_PUBLIC_GSC_VERIFICATION`, rebuild and re-upload.
+2. **Sitemaps** → submit `https://www.yourdomain.com/sitemap.xml`.
+3. Use **URL Inspection** on the homepage and a tool page to confirm they are indexable ("Crawled / URL is on Google" may take days).
+
+## 5. Analytics (optional)
+
+1. Create a GA4 property and copy the measurement ID (`G-XXXXXXXXXX`).
+2. Set `NEXT_PUBLIC_GA_ID`, rebuild, re-upload. The script loads after the page is interactive and the site works if it is blocked. No tool input is ever sent.
+3. **Consent:** Toolora does not ship a cookie-consent banner. If you serve visitors in the EU/UK (or other regions requiring consent), add a consent mechanism before enabling GA or AdSense, and keep the Privacy Policy accurate.
+
+## 6. AdSense (later)
+
+Ads are off. When your site is approved: set `NEXT_PUBLIC_ADSENSE_CLIENT`, add the AdSense script and slot IDs in `src/components/layout/AdSlot.tsx`, and add a consent solution first. Do not place ads above the tool.
+
+## Troubleshooting
+
+| Symptom                            | Fix                                                                                                            |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Pages 404 except the homepage      | `out/` contents were uploaded in a nested folder. `index.html` must be directly in `public_html`.              |
+| Blank page / unstyled              | Upload was partial. Re-upload including the `_next` folder.                                                    |
+| PDF upload does nothing            | `.mjs` is served with the wrong type. Confirm `.htaccess` is present (it adds `AddType text/javascript .mjs`). |
+| Redirect loop                      | A Cloudflare/"Force HTTPS" setting conflicts with the `.htaccess` HTTPS rule. Remove one.                      |
+| Canonical points to `example.com`  | `NEXT_PUBLIC_SITE_URL` was not set at build time. Rebuild with `build:prod`.                                   |
+| Contact page says "not configured" | Set `NEXT_PUBLIC_CONTACT_EMAIL` and rebuild.                                                                   |

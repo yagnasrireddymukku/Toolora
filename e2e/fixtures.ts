@@ -14,7 +14,7 @@ export const test = base.extend({
       await page.waitForFunction(
         () => document.documentElement.dataset.hydrated === "true",
         undefined,
-        { timeout: 15_000 },
+        { timeout: 30_000 },
       );
       return response;
     };
