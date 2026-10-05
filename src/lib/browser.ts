@@ -27,15 +27,23 @@ export async function copyText(text: string): Promise<boolean> {
 
 export type ShareOutcome = "shared" | "copied" | "cancelled" | "failed";
 
-/** Uses the Web Share API where available, otherwise copies the text to the clipboard. */
+/**
+ * Uses the Web Share API where available (including files when the browser can share
+ * them), otherwise copies the text to the clipboard.
+ */
 export async function shareContent(data: {
   title: string;
   text: string;
   url?: string;
+  files?: File[];
 }): Promise<ShareOutcome> {
   if (typeof navigator.share === "function") {
+    const withFiles = data.files?.length && navigator.canShare?.({ files: data.files });
+    const payload = withFiles
+      ? { title: data.title, text: data.text, files: data.files }
+      : { title: data.title, text: data.text, url: data.url };
     try {
-      await navigator.share(data);
+      await navigator.share(payload);
       return "shared";
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError")
@@ -43,8 +51,18 @@ export async function shareContent(data: {
       // otherwise fall back to copy
     }
   }
-  const payload = [data.text, data.url].filter(Boolean).join("\n");
-  return (await copyText(payload)) ? "copied" : "failed";
+  const text = [data.text, data.url].filter(Boolean).join("\n");
+  return (await copyText(text)) ? "copied" : "failed";
+}
+
+/** Decodes a base64 data URL (e.g. a canvas/QR PNG) into a Blob without using fetch. */
+export function dataUrlToBlob(dataUrl: string): Blob {
+  const [header, base64] = dataUrl.split(",");
+  const mime = /data:([^;]+);base64/.exec(header)?.[1] ?? "application/octet-stream";
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
 }
 
 export function downloadBlob(filename: string, blob: Blob): void {

@@ -112,14 +112,11 @@ test.describe("career tools", () => {
       `</w:body></w:document>`;
     const buffer = Buffer.from(zipSync({ "word/document.xml": strToU8(xml) }));
     await page.goto("/tools/career/ats-resume-checker/");
-    await page
-      .locator('input[type="file"]')
-      .setInputFiles({
-        name: "resume.docx",
-        mimeType:
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        buffer,
-      });
+    await page.locator('input[type="file"]').setInputFiles({
+      name: "resume.docx",
+      mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      buffer,
+    });
     await expect(page.getByText(/Read resume\.docx in your browser/)).toBeVisible();
     await expect(page.getByLabel("Your resume")).toHaveValue(/Asha Verma/);
   });
@@ -148,21 +145,19 @@ test.describe("career tools", () => {
 
   test("rejects an unsupported or fake file with a clear message", async ({ page }) => {
     await page.goto("/tools/career/ats-resume-checker/");
-    await page
-      .locator('input[type="file"]')
-      .setInputFiles({
-        name: "photo.png",
-        mimeType: "image/png",
-        buffer: Buffer.from("x"),
-      });
-    await expect(page.getByRole("alert").filter({ hasText: "Unsupported file type" })).toBeVisible();
-    await page
-      .locator('input[type="file"]')
-      .setInputFiles({
-        name: "fake.pdf",
-        mimeType: "application/pdf",
-        buffer: Buffer.from("not really a pdf"),
-      });
+    await page.locator('input[type="file"]').setInputFiles({
+      name: "photo.png",
+      mimeType: "image/png",
+      buffer: Buffer.from("x"),
+    });
+    await expect(
+      page.getByRole("alert").filter({ hasText: "Unsupported file type" }),
+    ).toBeVisible();
+    await page.locator('input[type="file"]').setInputFiles({
+      name: "fake.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("not really a pdf"),
+    });
     await expect(page.getByRole("alert").filter({ hasText: "valid PDF" })).toBeVisible();
   });
 });

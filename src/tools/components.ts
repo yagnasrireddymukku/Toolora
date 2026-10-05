@@ -2,12 +2,14 @@ import type { ComponentType } from "react";
 import { AtsResumeChecker } from "./career/AtsResumeChecker";
 import { JobDescriptionAnalyzer } from "./career/JobDescriptionAnalyzer";
 import { KeywordMatcher } from "./career/KeywordMatcher";
+import { JsonFormatter } from "./developer/JsonFormatter";
 import { AttendanceCalculator } from "./education/AttendanceCalculator";
 import { CgpaCalculator } from "./education/CgpaCalculator";
 import { PercentageCalculator } from "./education/PercentageCalculator";
 import { SgpaCalculator } from "./education/SgpaCalculator";
 import { CtcCalculator } from "./salary/CtcCalculator";
 import { SalaryHikeCalculator } from "./salary/SalaryHikeCalculator";
+import { QrGenerator } from "./utility/QrGenerator";
 
 /** Maps "category/slug" to the interactive component rendered inside the tool page template. */
 export const TOOL_COMPONENTS: Record<string, ComponentType> = {
@@ -20,4 +22,6 @@ export const TOOL_COMPONENTS: Record<string, ComponentType> = {
   "career/resume-keyword-matcher": KeywordMatcher,
   "salary/ctc-to-inhand-calculator": CtcCalculator,
   "salary/salary-hike-calculator": SalaryHikeCalculator,
+  "developer/json-formatter": JsonFormatter,
+  "utility/qr-code-generator": QrGenerator,
 };
