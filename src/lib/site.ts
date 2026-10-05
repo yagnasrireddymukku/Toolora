@@ -1,7 +1,7 @@
 export const SITE_NAME = "Toolora";
 export const SITE_TAGLINE = "Useful tools. One simple place.";
 export const SITE_DESCRIPTION =
-  "Free online tools for study, work and everyday tasks: CGPA and SGPA calculators, ATS resume checker, salary calculators, JSON formatter, QR code generator and more. Private by design, no sign-up.";
+  "Free online tools for study, work and everyday tasks: grade calculators, ATS resume checker, salary calculators, JSON formatter and QR codes. Private, no sign-up.";
 
 const FALLBACK_URL = "https://www.example.com";
 

@@ -29,7 +29,11 @@ export function Modal({
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      dialog.showModal();
+      // React's autoFocus runs before the dialog is open, so move focus explicitly.
+      dialog.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+    }
     if (!open && dialog.open) dialog.close();
     document.body.classList.toggle("scroll-locked", open);
     return () => document.body.classList.remove("scroll-locked");

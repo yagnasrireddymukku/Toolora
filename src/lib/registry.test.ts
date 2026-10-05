@@ -1,15 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { TOOL_COMPONENTS } from "@/tools/components";
+import { LOADER_IDS } from "@/tools/ToolLoader";
 import { buildMetadata, serializeJsonLd } from "./seo";
-import { getActiveCategories, getTool, TOOLS, toolPath } from "./tools/registry";
+import {
+  getActiveCategories,
+  getSearchIndex,
+  getTool,
+  TOOLS,
+  toolPath,
+} from "./tools/registry";
 import { searchTools } from "./tools/search";
 
 describe("tool registry integrity", () => {
   it("has unique slugs and a component for every tool", () => {
     const slugs = TOOLS.map((t) => t.slug);
     expect(new Set(slugs).size).toBe(slugs.length);
-    for (const t of TOOLS)
-      expect(TOOL_COMPONENTS[`${t.category}/${t.slug}`]).toBeDefined();
+    for (const t of TOOLS) expect(LOADER_IDS).toContain(`${t.category}/${t.slug}`);
   });
 
   it("only references related tools that exist", () => {
@@ -45,19 +50,21 @@ describe("tool registry integrity", () => {
   });
 });
 
+const INDEX = getSearchIndex();
+
 describe("searchTools", () => {
   it("matches by name, keyword and category, case-insensitively", () => {
-    expect(searchTools(TOOLS, "CGPA")[0].slug).toBe("cgpa-calculator");
-    expect(searchTools(TOOLS, "bunk").map((t) => t.slug)).toContain(
+    expect(searchTools(INDEX, "CGPA")[0].slug).toBe("cgpa-calculator");
+    expect(searchTools(INDEX, "bunk").map((t) => t.slug)).toContain(
       "attendance-calculator",
     );
-    expect(searchTools(TOOLS, "education").length).toBeGreaterThan(1);
+    expect(searchTools(INDEX, "education").length).toBeGreaterThan(1);
   });
   it("requires every term to match", () => {
-    expect(searchTools(TOOLS, "cgpa zzzz")).toHaveLength(0);
+    expect(searchTools(INDEX, "cgpa zzzz")).toHaveLength(0);
   });
   it("returns nothing for blank queries", () => {
-    expect(searchTools(TOOLS, "   ")).toHaveLength(0);
+    expect(searchTools(INDEX, "   ")).toHaveLength(0);
   });
 });
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LinkButton } from "@/components/ui/Button";
 import { SearchPanel } from "@/components/layout/SearchPanel";
+import { getSearchIndex } from "@/lib/tools/registry";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -16,7 +17,7 @@ export default function NotFound() {
         The link may be out of date. Search for a tool below or head back to the homepage.
       </p>
       <div className="mt-6 text-left">
-        <SearchPanel />
+        <SearchPanel index={getSearchIndex()} />
       </div>
       <div className="mt-6">
         <LinkButton href="/">Go to homepage</LinkButton>

@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { SearchPanel } from "@/components/layout/SearchPanel";
+import { getSearchIndex } from "@/lib/tools/registry";
 import { AttendanceCalculator } from "@/tools/education/AttendanceCalculator";
 import { CgpaCalculator } from "@/tools/education/CgpaCalculator";
 import { PercentageCalculator } from "@/tools/education/PercentageCalculator";
@@ -10,7 +11,7 @@ import { SgpaCalculator } from "@/tools/education/SgpaCalculator";
 describe("SearchPanel", () => {
   it("finds tools by keyword and links to them", async () => {
     const user = userEvent.setup();
-    render(<SearchPanel />);
+    render(<SearchPanel index={getSearchIndex()} />);
     await user.type(screen.getByLabelText("Search tools"), "cgpa");
     const link = await screen.findByRole("link", { name: /CGPA Calculator/i });
     expect(link.getAttribute("href")).toMatch(/^\/tools\/education\/cgpa-calculator\/?$/);
@@ -18,7 +19,7 @@ describe("SearchPanel", () => {
 
   it("shows an empty state for no matches", async () => {
     const user = userEvent.setup();
-    render(<SearchPanel />);
+    render(<SearchPanel index={getSearchIndex()} />);
     await user.type(screen.getByLabelText("Search tools"), "zzzzqq");
     expect(await screen.findByText("No tools found")).toBeInTheDocument();
   });

@@ -1,4 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
+import { type Page } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import { strToU8, zipSync } from "fflate";
 import { SAMPLE_RESUME } from "../src/lib/career/samples";
 

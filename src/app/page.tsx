@@ -11,6 +11,7 @@ import {
   getActiveCategories,
   getPopularTools,
   getRecentTools,
+  getSearchIndex,
   getToolsByCategory,
 } from "@/lib/tools/registry";
 import type { Faq } from "@/lib/tools/types";
@@ -64,7 +65,7 @@ export default function HomePage() {
             JSON. Simple tools that run in your browser, with no sign-up.
           </p>
           <div className="mx-auto mt-8 max-w-xl">
-            <SearchPanel />
+            <SearchPanel index={getSearchIndex()} />
           </div>
         </div>
       </section>

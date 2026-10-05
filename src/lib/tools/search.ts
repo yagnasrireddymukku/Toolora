@@ -1,5 +1,16 @@
-import type { ToolDefinition } from "./types";
-import { getCategory } from "./registry";
+/**
+ * Search runs in the browser over a slim index (no article content), so the full tool
+ * registry is never shipped to visitors. Build the index on the server with getSearchIndex().
+ */
+export interface SearchEntry {
+  slug: string;
+  category: string;
+  categoryName: string;
+  name: string;
+  description: string;
+  keywords: string[];
+  path: string;
+}
 
 function tokenize(text: string): string[] {
   return text
@@ -8,11 +19,11 @@ function tokenize(text: string): string[] {
     .filter(Boolean);
 }
 
-function scoreTool(tool: ToolDefinition, terms: string[]): number {
-  const name = tool.name.toLowerCase();
-  const category = (getCategory(tool.category)?.name ?? tool.category).toLowerCase();
-  const keywords = tool.keywords.join(" ").toLowerCase();
-  const description = tool.description.toLowerCase();
+function scoreEntry(entry: SearchEntry, terms: string[]): number {
+  const name = entry.name.toLowerCase();
+  const category = entry.categoryName.toLowerCase();
+  const keywords = entry.keywords.join(" ").toLowerCase();
+  const description = entry.description.toLowerCase();
   let total = 0;
   for (const term of terms) {
     let s = 0;
@@ -28,14 +39,14 @@ function scoreTool(tool: ToolDefinition, terms: string[]): number {
 
 /** Case-insensitive, multi-term search over name, keywords, category and description. */
 export function searchTools(
-  tools: readonly ToolDefinition[],
+  entries: readonly SearchEntry[],
   query: string,
-): ToolDefinition[] {
+): SearchEntry[] {
   const terms = tokenize(query);
   if (terms.length === 0) return [];
-  return tools
-    .map((tool) => ({ tool, score: scoreTool(tool, terms) }))
+  return entries
+    .map((entry) => ({ entry, score: scoreEntry(entry, terms) }))
     .filter((r) => r.score > 0)
-    .sort((a, b) => b.score - a.score || a.tool.name.localeCompare(b.tool.name))
-    .map((r) => r.tool);
+    .sort((a, b) => b.score - a.score || a.entry.name.localeCompare(b.entry.name))
+    .map((r) => r.entry);
 }

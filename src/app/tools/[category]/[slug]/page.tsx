@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ToolPageTemplate } from "@/components/tool/ToolPageTemplate";
 import { toolMetadata } from "@/lib/seo";
 import { getTool, TOOLS } from "@/lib/tools/registry";
-import { TOOL_COMPONENTS } from "@/tools/components";
+import { ToolLoader } from "@/tools/ToolLoader";
 
 export const dynamicParams = false;
 
@@ -22,12 +22,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function ToolPage({ params }: Params) {
   const { category, slug } = await params;
   const tool = getTool(category, slug);
-  const Component = TOOL_COMPONENTS[`${category}/${slug}`];
-  if (!tool || !Component) notFound();
+  if (!tool) notFound();
 
   return (
     <ToolPageTemplate tool={tool}>
-      <Component />
+      <ToolLoader id={`${category}/${slug}`} />
     </ToolPageTemplate>
   );
 }

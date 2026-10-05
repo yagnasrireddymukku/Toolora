@@ -4,20 +4,21 @@ import Link from "@/components/ui/SiteLink";
 import { useId, useMemo, useState } from "react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SearchIcon } from "@/components/ui/icons";
-import { getCategory, toolPath, TOOLS } from "@/lib/tools/registry";
-import { searchTools } from "@/lib/tools/search";
+import { searchTools, type SearchEntry } from "@/lib/tools/search";
 
 interface SearchPanelProps {
+  /** Slim search index built on the server with getSearchIndex(). */
+  index: SearchEntry[];
   autoFocus?: boolean;
   /** Called when a result is chosen (lets a parent dialog close itself). */
   onNavigate?: () => void;
 }
 
-export function SearchPanel({ autoFocus, onNavigate }: SearchPanelProps) {
+export function SearchPanel({ index, autoFocus, onNavigate }: SearchPanelProps) {
   const [query, setQuery] = useState("");
   const inputId = useId();
   const resultsId = useId();
-  const results = useMemo(() => searchTools(TOOLS, query), [query]);
+  const results = useMemo(() => searchTools(index, query), [index, query]);
   const hasQuery = query.trim().length > 0;
 
   return (
@@ -35,7 +36,7 @@ export function SearchPanel({ autoFocus, onNavigate }: SearchPanelProps) {
           enterKeyHint="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          autoFocus={autoFocus}
+          data-autofocus={autoFocus ? "" : undefined}
           autoComplete="off"
           placeholder="Search tools, e.g. CGPA, resume, JSON"
           aria-controls={resultsId}
@@ -55,15 +56,15 @@ export function SearchPanel({ autoFocus, onNavigate }: SearchPanelProps) {
             </p>
             <ul className="divide-line border-line divide-y rounded-lg border bg-white text-left">
               {results.map((tool) => (
-                <li key={`${tool.category}/${tool.slug}`}>
+                <li key={tool.path}>
                   <Link
-                    href={toolPath(tool)}
+                    href={tool.path}
                     onClick={onNavigate}
                     className="hover:bg-brand-50 block px-4 py-3"
                   >
                     <span className="text-ink font-semibold">{tool.name}</span>
                     <span className="text-brand-800 ml-2 text-xs font-semibold">
-                      {getCategory(tool.category)?.name}
+                      {tool.categoryName}
                     </span>
                     <span className="text-ink-muted mt-0.5 block text-sm">
                       {tool.description}

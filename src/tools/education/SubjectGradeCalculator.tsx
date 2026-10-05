@@ -126,7 +126,7 @@ export function SubjectGradeCalculator({ kind }: Props) {
 
           {!isCustom && scale && (
             <details className="bg-surface rounded-lg p-3 text-sm">
-              <summary className="min-h-8 cursor-pointer font-medium">
+              <summary className="flex min-h-11 cursor-pointer items-center font-medium">
                 Grade point mapping used
               </summary>
               <p className="text-ink-soft mt-2">

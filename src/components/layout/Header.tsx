@@ -7,7 +7,8 @@ import { Modal } from "@/components/ui/Modal";
 import { CloseIcon, MenuIcon, SearchIcon } from "@/components/ui/icons";
 import { SearchPanel } from "./SearchPanel";
 import { SITE_NAME } from "@/lib/site";
-import { categoryPath, getActiveCategories } from "@/lib/tools/registry";
+import type { NavCategory } from "@/lib/tools/registry";
+import type { SearchEntry } from "@/lib/tools/search";
 
 const NAV_LINKS = [
   { href: "/tools/", label: "Tools" },
@@ -19,11 +20,16 @@ const NAV_LINKS = [
 const ICON_BUTTON =
   "inline-flex size-11 items-center justify-center rounded-lg text-ink-soft hover:bg-slate-100";
 
-export function Header() {
+export function Header({
+  categories,
+  searchIndex,
+}: {
+  categories: NavCategory[];
+  searchIndex: SearchEntry[];
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const pathname = usePathname();
-  const categories = getActiveCategories();
 
   // Close any open overlay after navigation (route change or hash link).
   useEffect(() => {
@@ -129,7 +135,7 @@ export function Header() {
               {categories.map((c) => (
                 <li key={c.id}>
                   <Link
-                    href={categoryPath(c.id)}
+                    href={c.path}
                     onClick={() => setMenuOpen(false)}
                     className="flex min-h-11 items-center rounded-lg px-3 hover:bg-slate-100"
                   >
@@ -155,7 +161,11 @@ export function Header() {
               <CloseIcon />
             </button>
           </div>
-          <SearchPanel autoFocus onNavigate={() => setSearchOpen(false)} />
+          <SearchPanel
+            index={searchIndex}
+            autoFocus
+            onNavigate={() => setSearchOpen(false)}
+          />
         </div>
       </Modal>
     </header>

@@ -1,4 +1,5 @@
 import { CATEGORIES } from "./categories";
+import type { SearchEntry } from "./search";
 import type { Category, CategoryId, ToolDefinition } from "./types";
 import { TOOL_DEFINITIONS } from "@/tools/definitions";
 
@@ -46,4 +47,31 @@ export function getRelatedTools(tool: ToolDefinition): ToolDefinition[] {
   return tool.related
     .map((slug) => TOOLS.find((t) => t.slug === slug))
     .filter((t): t is ToolDefinition => Boolean(t));
+}
+
+/** Slim, serialisable index for client-side search and navigation (no article content). */
+export function getSearchIndex(): SearchEntry[] {
+  return TOOLS.map((t) => ({
+    slug: t.slug,
+    category: t.category,
+    categoryName: getCategory(t.category)?.name ?? t.category,
+    name: t.name,
+    description: t.description,
+    keywords: t.keywords,
+    path: toolPath(t),
+  }));
+}
+
+export interface NavCategory {
+  id: string;
+  name: string;
+  path: string;
+}
+
+export function getNavCategories(): NavCategory[] {
+  return getActiveCategories().map((c) => ({
+    id: c.id,
+    name: c.name,
+    path: categoryPath(c.id),
+  }));
 }
