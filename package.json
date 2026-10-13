@@ -15,7 +15,8 @@
     "format:check": "prettier --check .",
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
     "verify:build": "node scripts/verify-build.mjs",
-    "build:prod": "next build && node scripts/verify-build.mjs"
+    "build:prod": "next build && node scripts/verify-build.mjs",
+    "package:hostinger": "npm run build:prod && node scripts/package-hostinger.mjs"
   },
   "dependencies": {
     "fflate": "^0.8.3",

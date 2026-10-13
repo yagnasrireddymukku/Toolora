@@ -16,6 +16,14 @@ npm run build:prod
 
 `build:prod` builds and then runs `scripts/verify-build.mjs`, which **fails** if the sitemap or canonical URLs still use the placeholder domain, `robots.txt`/404/`.htaccess` are missing, or an `.env` file would be uploaded. Environment values are baked in at build time: rebuild after changing them.
 
+### Shortcut: one zip for Hostinger
+
+```bash
+npm run package:hostinger
+```
+
+This runs `build:prod` and then creates **`toolora-hostinger.zip`** in the project folder. The zip holds the contents of `out/` (including the hidden `.htaccess`) with `index.html` at its root. Upload it to `public_html` in File Manager and choose **Extract**. The zip is git-ignored.
+
 ## 2. Upload
 
 1. hPanel → **Websites** → your site → **File Manager** (or use FTP/SFTP).

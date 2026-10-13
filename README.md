@@ -30,18 +30,19 @@ npm run dev                    # http://localhost:3000
 
 ## Scripts
 
-| Command                | What it does                                                    |
-| ---------------------- | --------------------------------------------------------------- |
-| `npm run dev`          | Development server                                              |
-| `npm run build`        | Production static export into `out/`                            |
-| `npm run build:prod`   | Build, then verify `out/` is safe to upload                     |
-| `npm run verify:build` | Verify an existing `out/` (placeholder domain, robots, 404 …)   |
-| `npm run lint`         | ESLint                                                          |
-| `npm run typecheck`    | TypeScript (strict)                                             |
-| `npm test`             | Vitest unit and component tests                                 |
-| `npm run e2e`          | Playwright end-to-end and audit suites against the built `out/` |
-| `npm run check`        | lint + typecheck + unit tests + build                           |
-| `npm run format`       | Prettier                                                        |
+| Command                     | What it does                                                    |
+| --------------------------- | --------------------------------------------------------------- |
+| `npm run dev`               | Development server                                              |
+| `npm run build`             | Production static export into `out/`                            |
+| `npm run build:prod`        | Build, then verify `out/` is safe to upload                     |
+| `npm run package:hostinger` | Build, verify, and create `toolora-hostinger.zip` for upload    |
+| `npm run verify:build`      | Verify an existing `out/` (placeholder domain, robots, 404 …)   |
+| `npm run lint`              | ESLint                                                          |
+| `npm run typecheck`         | TypeScript (strict)                                             |
+| `npm test`                  | Vitest unit and component tests                                 |
+| `npm run e2e`               | Playwright end-to-end and audit suites against the built `out/` |
+| `npm run check`             | lint + typecheck + unit tests + build                           |
+| `npm run format`            | Prettier                                                        |
 
 First time running e2e: `npx playwright install` (downloads Chromium, Firefox, WebKit). Run `npm run build` before `npm run e2e`; the tests serve the real export with the production security headers.
 

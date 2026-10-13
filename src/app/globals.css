@@ -116,3 +116,39 @@ body.scroll-locked {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/* Hero: soft brand glow plus a subtle dot grid. Decorative only. */
+.hero-bg {
+  background-color: var(--color-brand-50);
+  background-image:
+    radial-gradient(60rem 22rem at 50% -8rem, rgb(153 246 228 / 0.55), transparent 70%),
+    radial-gradient(rgb(15 118 110 / 0.12) 1px, transparent 1px);
+  background-size:
+    auto,
+    22px 22px;
+}
+
+/* Cards lift slightly on hover (disabled for reduced motion by the global rule above). */
+.card-lift {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 6px 14px rgb(15 23 42 / 0.1),
+    0 2px 4px rgb(15 23 42 / 0.06);
+}
+
+/* Section headings get a short brand-coloured accent. */
+main h2.section-title::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 3px;
+  margin-top: 0.4rem;
+  border-radius: 2px;
+  background: var(--color-brand-600);
+}

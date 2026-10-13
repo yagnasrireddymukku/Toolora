@@ -29,8 +29,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="flex min-h-screen flex-col">
+    // suppressHydrationWarning: browser extensions (translators, Grammarly, ad blockers) often
+    // add attributes to <html>/<body> before React loads, which would log a false hydration error.
+    <html lang="en" suppressHydrationWarning>
+      <body className="flex min-h-screen flex-col" suppressHydrationWarning>
         <Header categories={getNavCategories()} searchIndex={getSearchIndex()} />
         <main id="main" className="flex-1">
           {children}
